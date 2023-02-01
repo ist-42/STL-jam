@@ -385,7 +385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 428208924}
   m_Layer: 0
-  m_Name: lateral
+  m_Name: LateralRoots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -833,6 +833,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hor_speed: 1
   ver_speed: 1
+  lateral_num: 5
+  lateral: {fileID: 959324316120141103, guid: 0c2aa91f89a671b4b982ea6d1b872281, type: 3}
+  lateralParent: {fileID: 428208923}
 --- !u!96 &2096760738
 TrailRenderer:
   serializedVersion: 2
