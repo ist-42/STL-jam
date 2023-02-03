@@ -19,20 +19,23 @@ public class CharacterMovement : MonoBehaviour
 
     private Rigidbody2D _rb;
     private bool _onGround = false;
-    private int _jumpPoint = 1;
+    public int _jumpPoint = 1;
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = gameObject.GetComponent<Rigidbody2D>();
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         float hor = Input.GetAxisRaw("Horizontal");
+        
 
-        if(_onGround)
+        if (_onGround)
         {
             if (Mathf.Abs(hor) > 0.001f)
             {
@@ -75,6 +78,26 @@ public class CharacterMovement : MonoBehaviour
             _jumpPoint--;
             _rb.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
         }
+
+        updateOnGround();
+    }
+
+    void updateOnGround()
+    {
+        float distance = 0.1f + gameObject.GetComponent<BoxCollider2D>().size.y / 2;
+        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance);
+        //debug
+        Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + new Vector3(0, -distance, 0), Color.red);
+
+        if (hit.collider==null)
+        {
+            _onGround = false;
+            _jumpPoint = 0;
+        } else
+        {
+            _onGround = true;
+            _jumpPoint = 1;
+        }
     }
 
 
@@ -85,24 +108,6 @@ public class CharacterMovement : MonoBehaviour
         {
             _rb.velocity = new Vector2(0, _rb.velocity.y);
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //10 is the layernumber of ground
-        if(collision.gameObject.layer == 10)
-        {
-            _onGround = true;
-            _jumpPoint = 1;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == 10)
-        {
-            _onGround = false;
-            _jumpPoint = 0;
-        }
+        
     }
 }
