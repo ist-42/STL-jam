@@ -84,7 +84,7 @@ public class CharacterMovement : MonoBehaviour
 
     void updateOnGround()
     {
-        float distance = 0.1f + gameObject.GetComponent<BoxCollider2D>().size.y / 2;
+        float distance = 0.1f + gameObject.GetComponent<CapsuleCollider2D>().size.y / 2;
         RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance);
         //debug
         Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + new Vector3(0, -distance, 0), Color.red);
