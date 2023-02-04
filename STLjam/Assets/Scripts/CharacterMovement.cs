@@ -17,6 +17,8 @@ public class CharacterMovement : MonoBehaviour
 
     public float jumpForce = 10.0f;
 
+    public float groundDetectDistance = 0.1f;
+
     private Rigidbody2D _rb;
     private bool _onGround = false;
     public int _jumpPoint = 1;
@@ -88,26 +90,43 @@ public class CharacterMovement : MonoBehaviour
 
         updateOnGround();
         updateFacing();
+        updateSeed();
     }
 
+    void updateSeed()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        { 
+            GameController.Instance.createSeed(this);
+        }
+    }
     void updateOnGround()
     {
         // float distance = 0.1f + _capsule.size.y / 2;
         float distance = 0.1f;
-        
+        float width = _capsule.size.x;
         // 10 is the mask number of ground layer
-        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance, LayerMask.GetMask("ground"));
+        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance, GameController.Instance.standable);
         //debug
         Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + new Vector3(0, -distance, 0), Color.red);
-
-        if (hit.collider==null)
-        {
-            _onGround = false;
-            _jumpPoint = 0;
-        } else
+        
+        // 10 is the mask number of ground layer
+        RaycastHit2D hit1 = Physics2D.Raycast(gameObject.transform.position + Vector3.left * (width/2-groundDetectDistance), Vector2.down, distance, GameController.Instance.standable);
+        //debug
+        Debug.DrawLine(gameObject.transform.position + Vector3.left * (width/2-groundDetectDistance), gameObject.transform.position + Vector3.left * (width/2-groundDetectDistance) + new Vector3(0, -distance, 0), Color.red);
+        
+        RaycastHit2D hit2 = Physics2D.Raycast(gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance), Vector2.down, distance, GameController.Instance.standable);
+        Debug.DrawLine(gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance), gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance) + new Vector3(0, -distance, 0), Color.red);
+        
+        if (hit.collider || hit1.collider || hit2.collider)
         {
             _onGround = true;
             _jumpPoint = 1;
+            
+        } else
+        {
+            _onGround = false;
+            _jumpPoint = 0;
         }
         
         

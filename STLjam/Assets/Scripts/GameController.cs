@@ -12,11 +12,13 @@ public class GameController : MonoBehaviour
     public GameObject treePrefab;
     public GameObject treeParent;
     public GameObject seedPrefab;
-    
-    
+    public GameObject seedParent;
+
+    public LayerMask standable;
     private void Awake()
     {
         _instance = this;
+        standable = LayerMask.GetMask("ground") | LayerMask.GetMask("seed") | LayerMask.GetMask("tree");
     }
 
     public static GameController Instance
@@ -71,9 +73,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void createSeed(CharacterMovement c)
+    {
+        GameObject seed = Instantiate(seedPrefab, c.gameObject.transform.position, Quaternion.identity);
+        seed.transform.parent = seedParent.transform;
+    }
+    
     public void seedGrow(Seed seed)
     {
-        GameObject tree = Instantiate(treePrefab, seed.gameObject.transform);
+        seed.planted = true;
+        GameObject tree = Instantiate(treePrefab, seed.gameObject.transform.position,Quaternion.identity);
         tree.transform.parent = treeParent.transform;
     }
 }

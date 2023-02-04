@@ -39,8 +39,6 @@ public class Seed : MonoBehaviour
             return;
         _rb.constraints = RigidbodyConstraints2D.FreezeAll;
         GameController.Instance.seedGrow(this);
-        
-        
     }
     
     
