@@ -97,7 +97,8 @@ public class CharacterMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K))
         { 
-            GameController.Instance.createSeed(this);
+            if(GameController.Instance.currentWorldNum == 0)
+                GameController.Instance.createSeed(this);
         }
     }
     void updateOnGround()

@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 205531263}
   - component: {fileID: 205531262}
   - component: {fileID: 205531267}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1687,6 +1687,7 @@ MonoBehaviour:
   standable:
     serializedVersion: 2
     m_Bits: 0
+  seedNum: 0
   oldWorld: {fileID: 1046363750}
   newWorld: {fileID: 1765145142}
   player: {fileID: 205531261}

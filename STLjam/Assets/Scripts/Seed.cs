@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class Seed : MonoBehaviour
 
     public Rigidbody2D _rb;
 
+    public GameObject growedTree;
+
+    public bool canRetrive;
     
     
     // Start is called before the first frame update
@@ -17,6 +21,7 @@ public class Seed : MonoBehaviour
     {
         _rb = gameObject.GetComponent<Rigidbody2D>();
         radius = gameObject.GetComponent<CircleCollider2D>().radius;
+        canRetrive = false;
     }
 
     // Update is called once per frame
@@ -31,6 +36,14 @@ public class Seed : MonoBehaviour
                 frozeAndGrow();
             }
         }
+
+        if (canRetrive && planted)
+        {
+            if (Input.GetKey(KeyCode.L))
+            {
+                GameController.Instance.retriveSeed(this);
+            }
+        }
     }
 
     void frozeAndGrow()
@@ -40,6 +53,22 @@ public class Seed : MonoBehaviour
         _rb.constraints = RigidbodyConstraints2D.FreezeAll;
         GameController.Instance.seedGrow(this);
     }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        //6: layer number of player 
+        if (col.gameObject.layer == 6)
+        {
+            canRetrive = true;
+        }
+    }
     
-    
+    private void OnCollisionExit2D(Collision2D col)
+    {
+        //6: layer number of player 
+        if (col.gameObject.layer == 6)
+        {
+            canRetrive = false;
+        }
+    }
 }

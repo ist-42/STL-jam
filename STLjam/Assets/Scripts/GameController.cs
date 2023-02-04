@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -15,6 +16,10 @@ public class GameController : MonoBehaviour
     public GameObject seedParent;
 
     public LayerMask standable;
+
+    public TMP_Text SeedText;
+
+    public int seedNum;
     private void Awake()
     {
         _instance = this;
@@ -45,6 +50,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         updateWorld(currentWorldNum);
+        seedNum = 1;
     }
 
     // Update is called once per frame
@@ -75,8 +81,17 @@ public class GameController : MonoBehaviour
 
     public void createSeed(CharacterMovement c)
     {
+        if (currentWorldNum == 1)
+            return;
+        if (seedNum <= 0)
+        {
+            seedNum = 0;
+            return;
+        }
         GameObject seed = Instantiate(seedPrefab, c.gameObject.transform.position, Quaternion.identity);
         seed.transform.parent = seedParent.transform;
+        seedNum--;
+        updateSeedText(seedNum);
     }
     
     public void seedGrow(Seed seed)
@@ -84,5 +99,21 @@ public class GameController : MonoBehaviour
         seed.planted = true;
         GameObject tree = Instantiate(treePrefab, seed.gameObject.transform.position,Quaternion.identity);
         tree.transform.parent = treeParent.transform;
+        seed.growedTree = tree;
+    }
+
+    public void retriveSeed(Seed seed)
+    {
+        if (currentWorldNum == 1)
+            return;
+        Destroy(seed.growedTree);
+        Destroy(seed.gameObject);
+        seedNum++;
+        updateSeedText(seedNum);
+    }
+
+    private void updateSeedText(int seedNum)
+    {
+        SeedText.text = $"Seeds: {this.seedNum}";
     }
 }
