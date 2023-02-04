@@ -20,6 +20,9 @@ public class CharacterMovement : MonoBehaviour
     private Rigidbody2D _rb;
     private bool _onGround = false;
     public int _jumpPoint = 1;
+    public Animator _animator;
+    public SpriteRenderer _sp;
+    public CapsuleCollider2D _capsule;
     
     
 
@@ -27,9 +30,11 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         _rb = gameObject.GetComponent<Rigidbody2D>();
-
-        
+        _animator = gameObject.GetComponent<Animator>();
+        _sp = gameObject.GetComponent<SpriteRenderer>();
+        _capsule = gameObject.GetComponent<CapsuleCollider2D>();
     }
+    
 
     // Update is called once per frame
     void Update()
@@ -82,12 +87,16 @@ public class CharacterMovement : MonoBehaviour
         }
 
         updateOnGround();
+        updateFacing();
     }
 
     void updateOnGround()
     {
-        float distance = 0.1f + gameObject.GetComponent<CapsuleCollider2D>().size.y / 2;
-        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance);
+        // float distance = 0.1f + _capsule.size.y / 2;
+        float distance = 0.1f;
+        
+        // 10 is the mask number of ground layer
+        RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, Vector2.down, distance, LayerMask.GetMask("ground"));
         //debug
         Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + new Vector3(0, -distance, 0), Color.red);
 
@@ -100,6 +109,19 @@ public class CharacterMovement : MonoBehaviour
             _onGround = true;
             _jumpPoint = 1;
         }
+        
+        
+    }
+
+    void updateFacing()
+    {
+        if (Input.GetAxisRaw("Horizontal") < -0.05f)
+        {
+            _sp.flipX = true;
+        } else if (Input.GetAxisRaw("Horizontal") > 0.05f)
+        {
+            _sp.flipX = false;
+        }
     }
 
 
@@ -111,5 +133,8 @@ public class CharacterMovement : MonoBehaviour
             _rb.velocity = new Vector2(0, _rb.velocity.y);
         }
         
+        _animator.SetBool("on_ground", _onGround);
+        _animator.SetFloat("hor_speed_abs", Mathf.Abs(_rb.velocity.x));
+        _animator.SetFloat("ver_speed", _rb.velocity.y);
     }
 }
