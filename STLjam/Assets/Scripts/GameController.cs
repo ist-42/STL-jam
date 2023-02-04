@@ -1,11 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 
 
 public class GameController : MonoBehaviour
 {
+    private static GameController _instance;
+    public GameObject treePrefab;
+    public GameObject treeParent;
+    public GameObject seedPrefab;
+    
+    
+    private void Awake()
+    {
+        _instance = this;
+    }
+
+    public static GameController Instance
+    {
+        get
+        {
+            if (!_instance)
+                Debug.Log("GameController Error: null instance");
+            return _instance;
+        }
+    }
+    
     public GameObject oldWorld;
 
     public GameObject newWorld;
@@ -46,5 +69,11 @@ public class GameController : MonoBehaviour
                 newWorld.SetActive(true);
                 break;
         }
+    }
+
+    public void seedGrow(Seed seed)
+    {
+        GameObject tree = Instantiate(treePrefab, seed.gameObject.transform);
+        tree.transform.parent = treeParent.transform;
     }
 }

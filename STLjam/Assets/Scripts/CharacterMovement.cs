@@ -20,6 +20,8 @@ public class CharacterMovement : MonoBehaviour
     private Rigidbody2D _rb;
     private bool _onGround = false;
     public int _jumpPoint = 1;
+    
+    
 
     // Start is called before the first frame update
     void Start()
