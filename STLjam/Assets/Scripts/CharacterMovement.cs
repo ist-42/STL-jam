@@ -119,7 +119,7 @@ public class CharacterMovement : MonoBehaviour
         RaycastHit2D hit2 = Physics2D.Raycast(gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance), Vector2.down, distance, GameController.Instance.standable);
         Debug.DrawLine(gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance), gameObject.transform.position - Vector3.left * (width/2-groundDetectDistance) + new Vector3(0, -distance, 0), Color.red);
         
-        if (hit.collider || hit1.collider || hit2.collider)
+        if (hit.rigidbody || hit1.rigidbody || hit2.rigidbody)
         {
             _onGround = true;
             _jumpPoint = 1;
