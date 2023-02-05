@@ -16,9 +16,12 @@ public class GameController : MonoBehaviour
     public GameObject treeParent;
     public GameObject seedPrefab;
     public GameObject seedParent;
-
+    
+    public CircleCollider2D detect;
+    public CircleCollider2D detect1;
     public LayerMask standable;
-
+    public LayerMask unpassable;
+    
     public TMP_Text SeedText;
 
     public int seedNum;
@@ -37,18 +40,10 @@ public class GameController : MonoBehaviour
 
     //0:none, 1:prepare 2: done prepare 3: swap
     public int swapStatus = 0;
+
+    public TMP_Text winText;
     
-    private void Awake()
-    {
-        _instance = this;
-        standable = LayerMask.GetMask("ground") | LayerMask.GetMask("seed") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle");
-        var rt = new RenderTexture(Screen.width, Screen.height, 32);
-        _activeCam = cam0;
-        _hiddenCam = cam1;
-        Shader.SetGlobalTexture("_camrt", rt);
-        _hiddenCam.targetTexture = rt;
-        
-    }
+    
 
     //https://www.youtube.com/watch?v=dBsmaSJhUsc
     public void swapCam()
@@ -78,12 +73,30 @@ public class GameController : MonoBehaviour
     public int currentWorldNum = 0;
     public int worldCount = 2;
 
+    private ContactFilter2D cf2d;
+    private Collider2D[] tcd2d;
+    
+    private void Awake()
+    {
+        _instance = this;
+        standable = LayerMask.GetMask("ground") | LayerMask.GetMask("seed") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle");
+        unpassable = LayerMask.GetMask("ground") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle");
+        var rt = new RenderTexture(Screen.width, Screen.height, 32);
+        _activeCam = cam0;
+        _hiddenCam = cam1;
+        Shader.SetGlobalTexture("_camrt", rt);
+        _hiddenCam.targetTexture = rt;
+        cf2d.layerMask = unpassable;
+        tcd2d = new Collider2D[1];
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         seedNum = 1;
         wormHoleSp.color = new Color(1,1,1,0);
         v.profile.TryGet(out caj);
+        
     }
 
     // Update is called once per frame
@@ -125,12 +138,13 @@ public class GameController : MonoBehaviour
         while (c.a < 1.0f)
         {
             c.a += 1.0f /(60.0f * timeToShowWormHole);
-            caj.saturation.value -= 50.0f /(60.0f * timeToShowWormHole);
+            caj.saturation.value -= 90.0f /(60.0f * timeToShowWormHole);
             wormHoleSp.color = c;
             yield return new WaitForEndOfFrame();
         }
 
         swapStatus = 2;
+        caj.saturation.value = -70;
     }
     
     IEnumerator hideWormHole()
@@ -139,31 +153,32 @@ public class GameController : MonoBehaviour
         while (c.a > 0.01f)
         {
             c.a -= 1.0f /(60.0f * timeToShowWormHole);
-            caj.saturation.value += 50.0f /(60.0f * timeToShowWormHole);
+            caj.saturation.value += 90.0f /(60.0f * timeToShowWormHole);
             wormHoleSp.color = c;
             yield return new WaitForEndOfFrame();
         }  
         swapStatus = 0;
         Time.timeScale = 1;
-        caj.saturation.value = 0;
+        caj.saturation.value = 20;
     }
     
     IEnumerator passWormHole()
     {
         Time.timeScale = 0.7f;
-        while (wormHoldMask.transform.localScale.x < 10f)
+        while (wormHoldMask.transform.localScale.x < 7f)
         {
-            wormHoldMask.transform.localScale += 10.0f /(60.0f * timeToTravelThroughWormHole) * Vector3.one;
-            caj.saturation.value += 50.0f /(60.0f * timeToTravelThroughWormHole);
+            wormHoldMask.transform.localScale += 7.0f /(60.0f * timeToTravelThroughWormHole) * Vector3.one;
+            caj.saturation.value += 90.0f /(60.0f * timeToTravelThroughWormHole);
             Time.timeScale += 0.3f /(60.0f * timeToTravelThroughWormHole);
             yield return new WaitForEndOfFrame();
         }
         
-        doSwapWorld();
-        caj.saturation.value = 0;
+        
+        caj.saturation.value = 20;
         Color c = wormHoleSp.color;
         c.a = 0;
         wormHoleSp.color = c;
+        doSwapWorld();
         wormHoldMask.transform.localScale = Vector3.one;
         swapStatus = 0;
         Time.timeScale = 1;
@@ -173,8 +188,10 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && swapStatus == 2)
         {
-            
-            startSwapWorld();
+            if (detect.OverlapCollider(cf2d, tcd2d)==0 && detect1.OverlapCollider(cf2d, tcd2d)==0)
+            {
+                startSwapWorld();
+            }
         }
         else if (Input.GetButtonDown("Fire2") && (swapStatus == 0 || swapStatus == 2))
         {
