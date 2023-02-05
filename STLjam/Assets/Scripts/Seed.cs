@@ -39,7 +39,7 @@ public class Seed : MonoBehaviour
 
         if (canRetrive && planted)
         {
-            if (Input.GetKey(KeyCode.L))
+            if (Input.GetKey(KeyCode.E))
             {
                 GameController.Instance.retriveSeed(this);
             }

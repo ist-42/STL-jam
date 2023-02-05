@@ -19,13 +19,14 @@ public class CharacterMovement : MonoBehaviour
 
     public float groundDetectDistance = 0.1f;
 
+
     private Rigidbody2D _rb;
     private bool _onGround = false;
     public int _jumpPoint = 1;
     public Animator _animator;
     public SpriteRenderer _sp;
     public CapsuleCollider2D _capsule;
-    
+
     
 
     // Start is called before the first frame update
@@ -35,6 +36,7 @@ public class CharacterMovement : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
         _sp = gameObject.GetComponent<SpriteRenderer>();
         _capsule = gameObject.GetComponent<CapsuleCollider2D>();
+        
     }
     
 
@@ -42,7 +44,6 @@ public class CharacterMovement : MonoBehaviour
     void Update()
     {
         float hor = Input.GetAxisRaw("Horizontal");
-        
 
         if (_onGround)
         {
@@ -95,7 +96,7 @@ public class CharacterMovement : MonoBehaviour
 
     void updateSeed()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.F))
         { 
             if(GameController.Instance.currentWorldNum == 0)
                 GameController.Instance.createSeed(this);
