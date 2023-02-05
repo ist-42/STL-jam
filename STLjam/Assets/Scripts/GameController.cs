@@ -79,8 +79,8 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        standable = LayerMask.GetMask("ground") | LayerMask.GetMask("seed") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle");
-        unpassable = LayerMask.GetMask("ground") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle");
+        standable = LayerMask.GetMask("ground") | LayerMask.GetMask("seed") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle") | LayerMask.GetMask("obstacle");
+        unpassable = LayerMask.GetMask("ground") | LayerMask.GetMask("tree") | LayerMask.GetMask("newground") | LayerMask.GetMask("newobstacle") | LayerMask.GetMask("obstacle");
         var rt = new RenderTexture(Screen.width, Screen.height, 32);
         _activeCam = cam0;
         _hiddenCam = cam1;
